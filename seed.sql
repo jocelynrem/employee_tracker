@@ -31,3 +31,8 @@ VALUES ("Sales Lead", 100000, 4),
 ("Accountant", 125000, 2);
 
 SELECT * FROM role;
+
+SELECT e.id "ID", e.first_name "First Name", e.last_name "Last Name", r.title "Title", d.name "Department", r.salary "Salary", e.first_name AND e.last_name "Manager" 
+FROM employee e
+INNER JOIN role r, department d
+WHERE e.role_id = r.id AND d.id = r.department_id;
