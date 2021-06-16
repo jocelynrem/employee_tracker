@@ -1,5 +1,6 @@
 const mysql = require('mysql');
 const inquirer = require('inquirer');
+const art = require('ascii-art');
 const connection = mysql.createConnection({
     host: 'localhost',
     port: 3306,
@@ -8,6 +9,35 @@ const connection = mysql.createConnection({
     database: 'EmployeeTracker',
 });
 
+connection.connect((err) => {
+    if (err) throw err;
+    start()
+});
+
+const start = () => {
+    art.font("Employee Manager", 'doom')
+    .then((rendered)=>{
+        console.log(art.style(rendered, 'black_bg+blue+blink+inverse'));
+    }).catch((err)=>{
+        //err is an error
+    })
+    connection.end();
+}
+
+const runProgram = () => {
+    inquirer.prompt ({
+        name: 'action',
+        type: 'rawlist',
+        message: 'What would you like to do?',
+        choices: [
+            'Add Employee',
+            'Remove Emloyee',
+            'Update Employee Role',
+            'View All Roles',
+            'Add Role'
+        ]
+    })
+}
 
 // const addEmployee = () => {
 //     console.log('Inserting a new product...\n');
@@ -39,8 +69,3 @@ const readEmployee = () => {
         connection.end();
     });
 };
-
-connection.connect((err) => {
-    if (err) throw err;
-    readEmployee()
-});
