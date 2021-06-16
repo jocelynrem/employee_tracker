@@ -1,15 +1,16 @@
 USE EmployeeTracker;
 
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES ("Candy", "Burnham", 1, NULL),
+VALUES ("Candy", "Burnham", 1, 10),
 ("Jani", "Crawley", 2, 1),
 ("Zena", "Dennis", 2, 1),
-("Sherrie", "Peguero", 4, NULL),
+("Sherrie", "Peguero", 4, 10),
 ("Kera", "Olivero", 3, 4),
-("Kattie", "Hollis", 5, NULL),
+("Kattie", "Hollis", 5, 10),
 ("Echo", "Germano", 6, 6),
 ("Lillian", "Poch", 6, 6),
-("Melanie", "Shingleton", 7, NULL);
+("Melanie", "Shingleton", 7, 10),
+("N /", "A", 0, 0);
 
 SELECT * FROM employee;
 
@@ -32,7 +33,9 @@ VALUES ("Sales Lead", 100000, 4),
 
 SELECT * FROM role;
 
-SELECT e.id "ID", e.first_name "First Name", e.last_name "Last Name", r.title "Title", d.name "Department", r.salary "Salary", e.first_name AND e.last_name "Manager" 
+SELECT e.id "ID", e.first_name "First Name", e.last_name "Last Name", r.title "Title", d.name "Department", r.salary "Salary", 
+CONCAT (m.first_name, " ", m.last_name) "Manager" 
 FROM employee e
-INNER JOIN role r, department d
-WHERE e.role_id = r.id AND d.id = r.department_id;
+JOIN role r, department d, employee m
+WHERE m.id = e.manager_id AND e.role_id = r.id AND d.id = r.department_id
+ORDER BY id;
