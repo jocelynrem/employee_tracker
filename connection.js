@@ -1,5 +1,4 @@
 const mysql = require('mysql');
-const { throwError } = require('rxjs');
 
 const connection = mysql.createConnection({
     host: 'localhost',

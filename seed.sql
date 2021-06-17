@@ -10,7 +10,7 @@ VALUES ("Candy", "Burnham", 1, 10),
 ("Echo", "Germano", 6, 6),
 ("Lillian", "Poch", 6, 6),
 ("Melanie", "Shingleton", 7, 10),
-("N /", "A", 0, 0);
+("Sarah", "Kennedy", 8, 0);
 
 SELECT * FROM employee;
 
@@ -29,7 +29,8 @@ VALUES ("Sales Lead", 100000, 4),
 ("Legal Team Lead", 250000, 3),
 ("Lead Engineer", 150000, 1),
 ("Software Engineer", 120000, 1),
-("Accountant", 125000, 2);
+("Accountant", 125000, 2),
+("Project Manager", 250000, 1);
 
 SELECT * FROM role;
 
