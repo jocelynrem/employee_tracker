@@ -34,9 +34,14 @@ VALUES ("Sales Lead", 100000, 4),
 
 SELECT * FROM role;
 
+
+--show all data in one table
 SELECT e.id "ID", e.first_name "First Name", e.last_name "Last Name", r.title "Title", d.name "Department", r.salary "Salary", 
 CONCAT (m.first_name, " ", m.last_name) "Manager" 
 FROM employee e
 JOIN role r, department d, employee m
 WHERE m.id = e.manager_id AND e.role_id = r.id AND d.id = r.department_id
 ORDER BY id;
+
+--Show employees
+SELECT e.id "ID", e.first_name "First Name", e.last_name "Last Name" FROM employee e

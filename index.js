@@ -38,8 +38,6 @@ const firstQuestion = () => {
         message: 'What would you like to do?',
         choices: [
             'View All Employees',
-            'View All Employees By Department',
-            'View All Employees By Manager',
             'Add Employee',
             'Remove Emloyee',
             'Update Employee Role',
@@ -57,14 +55,6 @@ const firstQuestion = () => {
             switch (answer.action) {
                 case 'View All Employees':
                     showEmployees();
-                    break;
-
-                case 'View All Employees By Department':
-                    showEmployeesByDept();
-                    break;
-
-                case 'View All Employees By Manager':
-                    showEmployeesByMang();
                     break;
 
                 case 'Add Employee':
@@ -114,19 +104,48 @@ const firstQuestion = () => {
 }
 
 const showEmployees = () => {
-    console.log('Add Show Employee Function');
+    connection.query(
+        `SELECT e.id "ID", e.first_name "First Name", e.last_name "Last Name" FROM employee e;`,
+        (err, res) => {
+            if (err) throw err;
+            console.table(res)
+        })
     firstQuestion();
 };
 
-const showEmployeesByDept = () => {
-    console.log('Show Employees by Department Function');
-    firstQuestion();
-};
+// const showEmployeesByDept = () => {
+//     inquirer.prompt({
+//         name: 'action',
+//         type: 'rawlist',
+//         message: 'Select A Deprtment',
+//         choices: [
+//             'Engineering',
+//             'Finance',
+//             'Legal',
+//             'Sales'
+//         ]
+//     })
+//         .then((answer) => {
+//             switch (answer.action) {
+//                 case 'Engineering':
+//                     showEmployees();
+//                     break;
 
-const showEmployeesByMang = () => {
-    console.log('Show Employees by Manager Function');
-    firstQuestion();
-};
+//                 case 'Finance':
+//                     showEmployeesByDept();
+//                     break;
+
+//                 case 'Legal':
+//                     addEmployee();
+//                     break;
+
+//                 case 'Sales':
+//                     removeEmployee();
+//                     break;
+//             }
+//         })
+//     firstQuestion();
+// };
 
 const addEmployee = () => {
     console.log('Add Employee Function');
@@ -138,6 +157,16 @@ const removeEmployee = () => {
     firstQuestion();
 };
 
+const viewRoles = () => {
+    connection.query(
+        `SELECT r.id "ID", r.title "title" FROM role r;`,
+        (err, res) => {
+            if (err) throw err;
+            console.table(res)
+        })    
+        firstQuestion();
+};
+
 const updateRole = () => {
     console.log('Update Employee Role');
     firstQuestion();
@@ -145,11 +174,6 @@ const updateRole = () => {
 
 const updateDept = () => {
     console.log('Update Employee Role');
-    firstQuestion();
-};
-
-const viewRoles = () => {
-    console.log('View Roles Function');
     firstQuestion();
 };
 
@@ -164,8 +188,13 @@ const removeRole = () => {
 };
 
 const viewDepartments = () => {
-    console.log('View all Departments');
-    firstQuestion();
+    connection.query(
+        `SELECT * FROM department;`,
+        (err, res) => {
+            if (err) throw err;
+            console.table(res)
+        })    
+        firstQuestion();
 };
 
 const addDepartment = () => {
