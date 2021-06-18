@@ -10,7 +10,7 @@ VALUES ("Candy", "Burnham", 1, 10),
 ("Echo", "Germano", 6, 6),
 ("Lillian", "Poch", 6, 6),
 ("Melanie", "Shingleton", 7, 10),
-("Sarah", "Kennedy", 8, 0);
+("Sarah", "Kennedy", 8, null);
 
 SELECT * FROM employee;
 
