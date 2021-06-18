@@ -20,6 +20,7 @@
   "dependencies": {
     "ascii-art": "^2.8.0",
     "console.table": "^0.10.0",
+    "eventemitter": "^0.3.3",
     "inquirer": "^8.1.1",
     "mysql": "^2.18.1"
   }
