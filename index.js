@@ -30,7 +30,7 @@ const firstQuestion = () => {
         choices: [
             'View All Employees',
             'Add Employee',
-            'Remove Emloyee',
+            'Remove Employee',
             'Update Employee Role',
             'Update Employee Department',
             'View All Roles',
@@ -57,7 +57,7 @@ const firstQuestion = () => {
                     addEmployee();
                     break;
 
-                case 'Remove Emloyee':
+                case 'Remove Employee':
                     removeEmployee();
                     break;
 
@@ -66,11 +66,11 @@ const firstQuestion = () => {
                     break;
 
                 case 'Update Employee Department':
-                    updateDept();
+                    updateDepartments();
                     break;
 
                 case 'View All Roles':
-                    viewRoles();
+                    showRoles();
                     break;
 
                 case 'Add Role':
@@ -82,7 +82,7 @@ const firstQuestion = () => {
                     break;
 
                 case 'View All Departments':
-                    viewDepartments();
+                    showDepartments();
                     break;
 
                 case 'Add Department':
@@ -169,12 +169,38 @@ const addEmployee = () => {
 };
 
 const removeEmployee = () => {
-    console.log('Remove Employee Function');
-    setTimeout(addLine, 10)
-    setTimeout(firstQuestion, 100)
+    connection.query(`SELECT * FROM employee;`, (err, res) => {
+        if (err) throw err;
+        inquirer.prompt([
+            {
+                name: `employees`,
+                type: `rawlist`,
+                message: `Which employee would you like to remove?\n`,
+                choices() {
+                    const employeesArray = [];
+                    res.forEach(({ last_name }) => {
+                        employeesArray.push(last_name);
+                    });
+                    return employeesArray;
+                },
+
+            },
+        ])
+            .then((answer) => {
+                connection.query(`DELETE FROM employee WHERE ?`,
+                    {
+                        last_name: (answer.employees)
+                    },
+                    (err, res) => {
+                        if (err) throw err
+                        console.log(`${res.affectedRows} Deleted\n`)
+                        showEmployees();
+                    })
+            })
+    })
 };
 
-const viewRoles = () => {
+const showRoles = () => {
     addLine()
     connection.query(
         `SELECT r.id "ID", r.title "title" FROM role r;`,
@@ -191,7 +217,7 @@ const updateRole = () => {
     firstQuestion();
 };
 
-const updateDept = () => {
+const updateDepartments = () => {
     console.log('Update Employee Role');
     firstQuestion();
 };
@@ -203,6 +229,7 @@ const addRole = () => {
 
 const removeRole = () => {
     connection.query(`SELECT * FROM role;`, (err, res) => {
+        if (err) throw err;
         inquirer.prompt([
             {
                 name: `roles`,
@@ -226,14 +253,13 @@ const removeRole = () => {
                     (err, res) => {
                         if (err) throw err
                         console.log(`${res.affectedRows} Deleted\n`)
-                        viewRoles();
+                        showRoles();
                     })
             })
     })
-
 };
 
-const viewDepartments = () => {
+const showDepartments = () => {
     connection.query(
         `SELECT * FROM department;`,
         (err, res) => {
@@ -250,8 +276,35 @@ const addDepartment = () => {
 };
 
 const removeDepartment = () => {
-    console.log('Remove Department');
-    firstQuestion();
+    connection.query(`SELECT * FROM department;`, (err, res) => {
+        if (err) throw err;
+    inquirer.prompt([
+        {
+            name: `departments`,
+            type: `rawlist`,
+            message: `Which department would you like to remove?"\n`,
+            choices() {
+                const departmentsArray = [];
+                res.forEach(({ name }) => {
+                    departmentsArray.push(name);
+                });
+                return departmentsArray;
+            },
+
+        },
+    ])
+        .then((answer) => {
+            connection.query(`DELETE FROM department WHERE ?`,
+                {
+                    name: (answer.departments)
+                },
+                (err, res) => {
+                    if (err) throw err
+                    console.log(`${res.affectedRows} Deleted\n`)
+                    showDepartments();
+                })
+        })
+})
 };
 
 runProgram();
