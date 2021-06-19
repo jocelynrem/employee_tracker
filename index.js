@@ -13,7 +13,7 @@ const titleScreen = () => {
         })
 }
 
-const addLine = ( )=> {
+const addLine = () => {
     console.log(` \n`)
 }
 
@@ -31,8 +31,7 @@ const firstQuestion = () => {
             'View All Employees',
             'Add Employee',
             'Remove Employee',
-            'Update Employee Role',
-            'Update Employee Department',
+            'Update Employee',
             'View All Roles',
             'Add Role',
             'Remove Role',
@@ -61,12 +60,8 @@ const firstQuestion = () => {
                     removeEmployee();
                     break;
 
-                case 'Update Employee Role':
-                    updateRole();
-                    break;
-
-                case 'Update Employee Department':
-                    updateDepartments();
+                case 'Update Employee':
+                    updateEmployee();
                     break;
 
                 case 'View All Roles':
@@ -113,7 +108,7 @@ const showAll = () => {
             if (err) throw err;
             console.table(res)
         })
-        setTimeout(firstQuestion, 30);
+    setTimeout(firstQuestion, 30);
 }
 
 const showEmployees = () => {
@@ -123,48 +118,66 @@ const showEmployees = () => {
         (err, res) => {
             if (err) throw err;
             console.table(res)
-            
+
         }).then
-        setTimeout(addLine, 10)
-        setTimeout(firstQuestion, 100)
+    setTimeout(addLine, 10)
+    setTimeout(firstQuestion, 100)
 };
 
-// const showEmployeesByDept = () => {
-//     inquirer.prompt({
-//         name: 'action',
-//         type: 'rawlist',
-//         message: 'Select A Deprtment',
-//         choices: [
-//             'Engineering',
-//             'Finance',
-//             'Legal',
-//             'Sales'
-//         ]
-//     })
-//         .then((answer) => {
-//             switch (answer.action) {
-//                 case 'Engineering':
-//                     showEmployees();
-//                     break;
-
-//                 case 'Finance':
-//                     showEmployeesByDept();
-//                     break;
-
-//                 case 'Legal':
-//                     addEmployee();
-//                     break;
-
-//                 case 'Sales':
-//                     removeEmployee();
-//                     break;
-//             }
-//         })
-//     firstQuestion();
-// };
-
 const addEmployee = () => {
-    console.log('Add Employee Function');
+    connection.query(`SELECT * FROM role;`, (err, res) => {
+        if (err) throw err;
+        inquirer.prompt([
+            {
+                name: `first_name`,
+                type: `input`,
+                message: `Enter Employee First Name:`,
+            },
+            {
+                name: `last_name`,
+                type: `input`,
+                message: `Enter Employee Last Name:`,
+            },
+            {
+                name: `role`,
+                type: `input`,
+                message() {
+                    const newEmployeeArray = [];
+                    res.forEach(({ title, id }) => {
+                        newEmployeeArray.push(id + ' = ' + title);
+                    });
+                    console.log(`What is the emplyee's role ID?\n`)
+                    return newEmployeeArray.join(`\n`)
+                },
+                validate: (answer) => {
+                    if (isNaN(answer)) {
+                        return "Please enter the ID number";
+                    }
+                    return true;
+                },
+            }
+        ])
+            .then((answer) => {
+                connection.query(
+                    `INSERT INTO employee SET ?`,
+                    [
+                        {
+                            first_name: answer.first_name,
+                            last_name: answer.last_name,
+                            role_id: answer.role
+                        },
+                    ],
+                    (err, res) => {
+                        if (err) throw err;
+                        console.log(`${res.affectedRows} employee added. \n`)
+                        showEmployees();
+                    })
+            })
+    })
+}
+
+const updateEmployee = () => {
+    console.log('Add Update Employee Function');
     firstQuestion();
 };
 
@@ -208,18 +221,8 @@ const showRoles = () => {
             if (err) throw err;
             console.table(res)
         })
-        setTimeout(addLine, 10)
-        setTimeout(firstQuestion, 100)
-};
-
-const updateRole = () => {
-    console.log('Update Employee Role');
-    firstQuestion();
-};
-
-const updateDepartments = () => {
-    console.log('Update Employee Role');
-    firstQuestion();
+    setTimeout(addLine, 10)
+    setTimeout(firstQuestion, 100)
 };
 
 const addRole = () => {
@@ -266,9 +269,9 @@ const showDepartments = () => {
             if (err) throw err;
             console.table(res)
         })
-        setTimeout(addLine, 10)
-        setTimeout(firstQuestion, 100)
-    };
+    setTimeout(addLine, 10)
+    setTimeout(firstQuestion, 100)
+};
 
 const addDepartment = () => {
     console.log('Add Department');
@@ -278,33 +281,33 @@ const addDepartment = () => {
 const removeDepartment = () => {
     connection.query(`SELECT * FROM department;`, (err, res) => {
         if (err) throw err;
-    inquirer.prompt([
-        {
-            name: `departments`,
-            type: `rawlist`,
-            message: `Which department would you like to remove?"\n`,
-            choices() {
-                const departmentsArray = [];
-                res.forEach(({ name }) => {
-                    departmentsArray.push(name);
-                });
-                return departmentsArray;
-            },
-
-        },
-    ])
-        .then((answer) => {
-            connection.query(`DELETE FROM department WHERE ?`,
-                {
-                    name: (answer.departments)
+        inquirer.prompt([
+            {
+                name: `departments`,
+                type: `rawlist`,
+                message: `Which department would you like to remove?"\n`,
+                choices() {
+                    const departmentsArray = [];
+                    res.forEach(({ name }) => {
+                        departmentsArray.push(name);
+                    });
+                    return departmentsArray;
                 },
-                (err, res) => {
-                    if (err) throw err
-                    console.log(`${res.affectedRows} Deleted\n`)
-                    showDepartments();
-                })
-        })
-})
+
+            },
+        ])
+            .then((answer) => {
+                connection.query(`DELETE FROM department WHERE ?`,
+                    {
+                        name: (answer.departments)
+                    },
+                    (err, res) => {
+                        if (err) throw err
+                        console.log(`${res.affectedRows} Deleted\n`)
+                        showDepartments();
+                    })
+            })
+    })
 };
 
 runProgram();

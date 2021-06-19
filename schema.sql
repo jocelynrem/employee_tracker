@@ -15,6 +15,7 @@ CREATE TABLE employee (
     first_name varchar(30) NOT NULL,
     last_name varchar(30) NOT NULL,
     role_id int,
+    is_manager boolean,
     manager_id int,
     PRIMARY KEY (id)
 );
