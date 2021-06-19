@@ -321,8 +321,27 @@ const showDepartments = () => {
 };
 
 const addDepartment = () => {
-    console.log('Add Department');
-    firstQuestion();
+    inquirer.prompt([
+        {
+            name: `name`,
+            type: `input`,
+            message: `Enter New Department:`,
+        }
+    ])
+        .then((answer) => {
+            connection.query(
+                `INSERT INTO department SET ?`,
+                [
+                    {
+                        name: answer.name,
+                    },
+                ],
+                (err, res) => {
+                    if (err) throw err;
+                    console.log(`${res.affectedRows} new department added. \n`)
+                    showDepartments();
+                })
+        })
 };
 
 const removeDepartment = () => {
