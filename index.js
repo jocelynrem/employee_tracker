@@ -3,7 +3,7 @@ const inquirer = require('inquirer');
 const art = require('ascii-art');
 const cTable = require('console.table');
 const { restoreDefaultPrompts } = require('inquirer');
-require('events').EventEmitter.defaultMaxListeners = 15;
+// require('events').EventEmitter.defaultMaxListeners = 15;
 
 const titleScreen = () => {
     art.font("Employee Manager", 'doom')
@@ -98,12 +98,16 @@ const firstQuestion = () => {
 const showAll = () => {
     addLine()
     connection.query(
-        `SELECT e.id "ID", e.first_name "FirstName", e.last_name "LastName", r.title "Title", d.name "Department", r.salary "Salary", 
-    CONCAT (m.first_name, " ", m.last_name) "Manager" 
-    FROM employee e
-    JOIN role r, department d, employee m
-    WHERE m.id = e.manager_id AND e.role_id = r.id AND d.id = r.department_id
-    ORDER BY id\n`,
+        `SELECT e.id "ID", e.first_name "First Name", e.last_name "Last Name", r.title "Title", d.name "Department", r.salary "Salary", 
+        CONCAT (m.first_name, " ", m.last_name) "Manager" 
+        FROM employee e
+        LEFT JOIN role r
+        ON r.id = e.role_id
+        LEFT JOIN department d
+        ON d.id = r.department_id
+        LEFT JOIN employee m
+        ON m.id = e.manager_id
+        ORDER BY id;\n`,
         (err, res) => {
             if (err) throw err;
             console.table(res)
@@ -177,8 +181,35 @@ const addEmployee = () => {
 }
 
 const updateEmployee = () => {
-    console.log('Add Update Employee Function');
-    firstQuestion();
+    connection.query(`SELECT * FROM employee;`, (err, res) => {
+        if (err) throw err;
+        inquirer.prompt([
+            {
+                name: `employees`,
+                type: `rawlist`,
+                message: `Which employee would you like to update?\n`,
+                choices() {
+                    const employeesArray = [];
+                    res.forEach(({ id, first_name, last_name }) => {
+                        employeesArray.push(`${id} ${first_name} ${last_name}`);
+                    });
+                    return employeesArray;
+                },
+
+            },
+        ])
+            // .then((answer) => {
+            //     connection.query(`DELETE FROM employee WHERE ?`,
+            //         {
+            //             last_name: (answer.employees)
+            //         },
+            //         (err, res) => {
+            //             if (err) throw err
+            //             console.log(`${res.affectedRows} Deleted\n`)
+            //             showEmployees();
+            //         })
+            // })
+    })  
 };
 
 const removeEmployee = () => {
