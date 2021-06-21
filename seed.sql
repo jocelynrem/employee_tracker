@@ -1,16 +1,16 @@
 USE EmployeeTracker;
 
-INSERT INTO employee (first_name, last_name, role_id, is_manager, manager_id)
-VALUES ("Candy", "Burnham", 1, 1, 10),
-("Jani", "Crawley", 2, 0, 1),
-("Zena", "Dennis", 2, 0, 1),
-("Sherrie", "Peguero", 3, 1, 10),
-("Kera", "Olivero", 4, 0, 4),
-("Kattie", "Hollis", 5, 1, 10),
-("Echo", "Germano", 6, 0, 6),
-("Lillian", "Poch", 6, 0, 6),
-("Melanie", "Shingleton", 7, 1, 10),
-("Sarah", "Kennedy", 8, 1, null);
+INSERT INTO employee (first_name, last_name, role_id, manager_id)
+VALUES ("Candy", "Burnham", 1, null),
+("Jani", "Crawley", 2, 1),
+("Zena", "Dennis", 2, 1),
+("Sherrie", "Peguero", 3, null),
+("Kera", "Olivero", 4, 4),
+("Kattie", "Hollis", 5, null),
+("Echo", "Germano", 6, 6),
+("Lillian", "Poch", 6, 6),
+("Melanie", "Shingleton", 7, null),
+("Sarah", "Kennedy", 8, null);
 
 SELECT * FROM employee;
 

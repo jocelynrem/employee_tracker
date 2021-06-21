@@ -31,7 +31,7 @@ const firstQuestion = () => {
             'View All Employees',
             'Add Employee',
             'Remove Employee',
-            'Update Employee',
+            'Update Employee Role',
             'View All Roles',
             'Add Role',
             'Remove Role',
@@ -60,7 +60,7 @@ const firstQuestion = () => {
                     removeEmployee();
                     break;
 
-                case 'Update Employee':
+                case 'Update Employee Role':
                     updateEmployee();
                     break;
 
@@ -180,37 +180,66 @@ const addEmployee = () => {
     })
 }
 
-const updateEmployee = () => {
-    connection.query(`SELECT * FROM employee;`, (err, res) => {
-        if (err) throw err;
-        inquirer.prompt([
-            {
-                name: `employees`,
-                type: `rawlist`,
-                message: `Which employee would you like to update?\n`,
-                choices() {
-                    const employeesArray = [];
-                    res.forEach(({ id, first_name, last_name }) => {
-                        employeesArray.push(`${id} ${first_name} ${last_name}`);
-                    });
-                    return employeesArray;
-                },
-
-            },
-        ])
-            // .then((answer) => {
-            //     connection.query(`DELETE FROM employee WHERE ?`,
-            //         {
-            //             last_name: (answer.employees)
-            //         },
-            //         (err, res) => {
-            //             if (err) throw err
-            //             console.log(`${res.affectedRows} Deleted\n`)
-            //             showEmployees();
-            //         })
-            // })
-    })  
-};
+// const updateEmployee = () => {
+//     connection.query(`SELECT * FROM employee;`, (err, res) => {
+//         if (err) throw err;
+//         inquirer.prompt([
+//             {
+//                 name: `employees`,
+//                 type: `input`,
+//                 message() {
+//                     const empArray = [];
+//                     res.forEach(({ id, first_name, last_name }) => {
+//                         empArray.push(`${id} ${first_name} ${last_name}`);
+//                     });
+//                     console.log(`What is the ID of the employee to update?\n`)
+//                     return empArray.join(`\n`)
+//                 },
+//                 validate: (answer) => {
+//                     if (isNaN(answer)) {
+//                         return "Please enter the ID number";
+//                     }
+//                     return true;
+//                 },
+//             },
+//         ])
+//         connection.query(`SELECT * FROM role;`, (err, res) => {
+//             if (err) throw err;
+//             inquirer.prompt([
+//                 {
+//                     name: `role`,
+//                     type: `input`,
+//                     message() {
+//                         const roleArray = [];
+//                         res.forEach(({ title, id }) => {
+//                             roleArray.push(id + ' = ' + title);
+//                         });
+//                         console.log(`What is the new role ID?\n`)
+//                         return newEmployeeArray.join(`\n`)
+//                     },
+//                     validate: (answer) => {
+//                         if (isNaN(answer)) {
+//                             return "Please enter the ID number";
+//                         }
+//                         return true;
+//                     },
+//                 }
+//             ])
+//         })
+//             .then((answer) => {
+//                 connection.query(`UPDATE employee SET role_id = ? WHERE id = ?`,
+//                     {
+//                         role_id: (answer.role),
+//                         id: (answer.employees)
+//                     },
+//                     (err, res) => {
+//                         if (err) throw err
+//                         console.log(`${res.affectedRows} Deleted\n`)
+//                         showEmployees();
+//                     })
+//             })
+//     })  
+// };
 
 const removeEmployee = () => {
     connection.query(`SELECT * FROM employee;`, (err, res) => {
@@ -218,22 +247,27 @@ const removeEmployee = () => {
         inquirer.prompt([
             {
                 name: `employees`,
-                type: `rawlist`,
-                message: `Which employee would you like to remove?\n`,
-                choices() {
+                type: `input`,
+                message() {
                     const employeesArray = [];
-                    res.forEach(({ last_name }) => {
-                        employeesArray.push(last_name);
+                    res.forEach(({ id, first_name, last_name }) => {
+                        employeesArray.push(`${id} ${first_name} ${last_name}`);
                     });
-                    return employeesArray;
+                    console.log(`What is the ID of the employee to remove?\n`)
+                    return employeesArray.join(`\n`)
                 },
-
+                validate: (answer) => {
+                    if (isNaN(answer)) {
+                        return "Please enter the ID number";
+                    }
+                    return true;
+                },
             },
         ])
             .then((answer) => {
                 connection.query(`DELETE FROM employee WHERE ?`,
                     {
-                        last_name: (answer.employees)
+                        id: (answer.employees)
                     },
                     (err, res) => {
                         if (err) throw err
