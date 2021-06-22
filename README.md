@@ -8,6 +8,6 @@ A solution for managing a company's employees using node, inquirer, and MySQL.
 3. In terminal- navigate to downloaded folder
 4. Enter 'node index.js' to run program
 
-# Demo
+## Demo
 
-Demo.mp4
+
