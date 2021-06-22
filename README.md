@@ -10,3 +10,4 @@ A solution for managing a company's employees using node, inquirer, and MySQL.
 
 # Demo
 
+/Users/jremington/Desktop/bootcamp/employee_tracker/Demo.mp4
