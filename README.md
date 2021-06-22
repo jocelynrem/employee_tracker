@@ -1,4 +1,4 @@
-# Employee Maangement System
+# Employee Mangement System
 A solution for managing a company's employees using node, inquirer, and MySQL.
 
 ## Run
