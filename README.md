@@ -11,3 +11,9 @@ A solution for managing a company's employees using node, inquirer, and MySQL.
 ## Demo
 
 
+
+https://user-images.githubusercontent.com/44654386/122853707-a785c080-d2e0-11eb-8eba-f9e926a21378.mp4
+
+
+
+
