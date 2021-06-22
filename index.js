@@ -225,7 +225,7 @@ const updateEmployeeRole = () => {
                 console.log(`ROLE: ${answer.roleID}`)
                 console.log(`EMPLOYEE ID: ${answer.employeeID}`)
                 connection.query(`UPDATE employee SET ? WHERE ?;`,
-                    [   
+                    [
                         {
                             role_id: (answer.roleID),
                         },
