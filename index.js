@@ -3,7 +3,7 @@ const inquirer = require('inquirer');
 const art = require('ascii-art');
 const cTable = require('console.table');
 const { restoreDefaultPrompts } = require('inquirer');
-// require('events').EventEmitter.defaultMaxListeners = 15;
+const { up } = require('inquirer/lib/utils/readline');
 
 const titleScreen = () => {
     art.font("Employee Manager", 'doom')
@@ -61,7 +61,7 @@ const firstQuestion = () => {
                     break;
 
                 case 'Update Employee Role':
-                    updateEmployee();
+                    updateEmployeeRole();
                     break;
 
                 case 'View All Roles':
@@ -180,66 +180,67 @@ const addEmployee = () => {
     })
 }
 
-// const updateEmployee = () => {
-//     connection.query(`SELECT * FROM employee;`, (err, res) => {
-//         if (err) throw err;
-//         inquirer.prompt([
-//             {
-//                 name: `employees`,
-//                 type: `input`,
-//                 message() {
-//                     const empArray = [];
-//                     res.forEach(({ id, first_name, last_name }) => {
-//                         empArray.push(`${id} ${first_name} ${last_name}`);
-//                     });
-//                     console.log(`What is the ID of the employee to update?\n`)
-//                     return empArray.join(`\n`)
-//                 },
-//                 validate: (answer) => {
-//                     if (isNaN(answer)) {
-//                         return "Please enter the ID number";
-//                     }
-//                     return true;
-//                 },
-//             },
-//         ])
-//         connection.query(`SELECT * FROM role;`, (err, res) => {
-//             if (err) throw err;
-//             inquirer.prompt([
-//                 {
-//                     name: `role`,
-//                     type: `input`,
-//                     message() {
-//                         const roleArray = [];
-//                         res.forEach(({ title, id }) => {
-//                             roleArray.push(id + ' = ' + title);
-//                         });
-//                         console.log(`What is the new role ID?\n`)
-//                         return newEmployeeArray.join(`\n`)
-//                     },
-//                     validate: (answer) => {
-//                         if (isNaN(answer)) {
-//                             return "Please enter the ID number";
-//                         }
-//                         return true;
-//                     },
-//                 }
-//             ])
-//         })
-//             .then((answer) => {
-//                 connection.query(`UPDATE employee SET role_id = ? WHERE id = ?`,
-//                     {
-//                         role_id: (answer.role),
-//                         id: (answer.employees)
-//                     },
-//                     (err, res) => {
-//                         if (err) throw err
-//                         console.log(`${res.affectedRows} Deleted\n`)
-//                         showEmployees();
-//                     })
-//             })
-//     })  
-// };
+const updateEmployeeRole = () => {
+    addLine()
+    connection.query(
+        `SELECT e.id "ID", e.first_name "First Name", e.last_name "Last Name" FROM employee e;`,
+        (err, res) => {
+            if (err) throw err;
+            console.table(res)
+        })
+    connection.query(`SELECT * FROM role;`, (err, res) => {
+        if (err) throw err;
+        inquirer.prompt([
+            {
+                name: `employeeID`,
+                type: `input`,
+                message: `Input the ID of the employee you want to update:`,
+                validate: (answer) => {
+                    if (isNaN(answer)) {
+                        return "Please enter the ID number";
+                    }
+                    return true;
+                },
+            },
+            {
+                name: `roleID`,
+                type: `input`,
+                message() {
+                    const roleArray = [];
+                    res.forEach(({ title, id }) => {
+                        roleArray.push(id + ' = ' + title);
+                    });
+                    console.log(`What is the new role ID?\n`)
+                    return roleArray.join(`\n`)
+                },
+                validate: (answer) => {
+                    if (isNaN(answer)) {
+                        return "Please enter the ID number";
+                    }
+                    return true;
+                },
+            }
+        ])
+            .then((answer) => {
+                console.log(`ROLE: ${answer.roleID}`)
+                console.log(`EMPLOYEE ID: ${answer.employeeID}`)
+                connection.query(`UPDATE employee SET ? WHERE ?;`,
+                    [   
+                        {
+                            role_id: (answer.roleID),
+                        },
+                        {
+                            id: (answer.employeeID)
+                        },
+                    ],
+                    (err, res) => {
+                        if (err) throw err
+                        console.log(`${res.affectedRows} employee updated\n`)
+                        showAll();
+                    })
+            })
+    })
+};
 
 const removeEmployee = () => {
     connection.query(`SELECT * FROM employee;`, (err, res) => {
