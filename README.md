@@ -1,4 +1,4 @@
-# employee_tracker
+# Employee Maangement System
 A solution for managing a company's employees using node, inquirer, and MySQL.
 
 ## Run
