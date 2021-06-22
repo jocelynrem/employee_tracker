@@ -10,4 +10,3 @@ A solution for managing a company's employees using node, inquirer, and MySQL.
 
 # Demo
 
-<iframe src="https://drive.google.com/file/d/1SQIrXH-WdxoOddcmbU7tpdJnHxN8Ajvm/preview" width="640" height="480"></iframe>
